@@ -1,0 +1,62 @@
+buildscript {
+    ext.kotlin_version = '1.2.10'
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.1"
+        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.3'
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'kotlin'
+apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.junit.platform.gradle.plugin'
+
+group = 'ru.satek.todo'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile project(":domain")
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
+    compile "io.aconite:aconite-server:0.3.2-1-9-g8fc520d"
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    testCompile "io.aconite:aconite-client:0.3.2-1-9-g8fc520d"
+    testCompile "org.junit.jupiter:junit-jupiter-api:5.0.3"
+    testRuntime "org.junit.jupiter:junit-jupiter-engine:5.0.3"
+}
+
+test {
+    testLogging.showStandardStreams = true
+}
+
+shadowJar {
+    classifier = null
+    version = null
+}
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}
+
+sourceCompatibility = 1.8
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}

@@ -1,0 +1,14 @@
+/.gradle
+/.idea
+/.vertx
+/build
+/aconite/build
+/aconite/out
+/domain/build
+/domain/out
+/file-uploads
+/ktor/build
+/ktor/out
+/vertx/build
+/vertx/out
+/*.iml
