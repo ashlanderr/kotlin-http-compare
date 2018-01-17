@@ -6,7 +6,7 @@ class Executor {
     internal val existsUser = UUID.randomUUID()
     internal val email = "test@local"
     internal val password = "qwerty"
-    internal val items = mutableListOf<ItemData>()
+    internal val tasks = mutableMapOf<UUID, TaskData>()
 
     @Throws(DomainException::class)
     suspend fun <R> execute(command: Command<R>): R {

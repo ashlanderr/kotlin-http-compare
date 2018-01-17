@@ -5,3 +5,5 @@ open class DomainException(message: String? = null, cause: Throwable? = null) : 
 class WrongEmailOrPassword : DomainException()
 
 class UserNotFound : DomainException()
+
+class TaskNotFound : DomainException()

@@ -11,10 +11,7 @@ import io.vertx.ext.web.handler.LoggerHandler
 import io.vertx.kotlin.coroutines.dispatcher
 import kotlinx.coroutines.experimental.CoroutineDispatcher
 import ru.satek.todo.domain.Executor
-import ru.satek.todo.vertx.handlers.AbstractHandler
-import ru.satek.todo.vertx.handlers.AddItemHandler
-import ru.satek.todo.vertx.handlers.SelectAllItemsHandler
-import ru.satek.todo.vertx.handlers.SignInHandler
+import ru.satek.todo.vertx.handlers.*
 
 class TodoVerticle(private val executor: Executor) : AbstractVerticle() {
     private lateinit var dispatcher: CoroutineDispatcher
@@ -31,7 +28,6 @@ class TodoVerticle(private val executor: Executor) : AbstractVerticle() {
                 factory().start(dispatcher, context)
             }
         }
-
     }
 
     override fun start() {
@@ -44,10 +40,14 @@ class TodoVerticle(private val executor: Executor) : AbstractVerticle() {
             route("/auth/sign-in") {
                 post { SignInHandler(executor) }
             }
-            route("/items") {
-                get { SelectAllItemsHandler(executor) }
-                post { AddItemHandler(executor) }
+            route("/tasks") {
+                get { SelectAllTasksHandler(executor) }
+                post { AddTaskHandler(executor) }
             }
+            get("/tasks/completed") { SelectCompletedTasksHandler(executor) }
+            get("/tasks/open") { SelectOpenTasksHandler(executor) }
+            get("/tasks/:id") { SelectTaskByIdHandler(executor) }
+            post("/tasks/:id/complete") { CompleteTaskHandler(executor) }
         }
 
         vertx.createHttpServer()
@@ -61,6 +61,14 @@ class TodoVerticle(private val executor: Executor) : AbstractVerticle() {
 
     private fun Router.route(url: String, builder: RouteScope.() -> Unit) {
         RouteScope(this, url).builder()
+    }
+
+    private fun Router.get(url: String, handler: () -> AbstractHandler) {
+        route(url) { get(handler) }
+    }
+
+    private fun Router.post(url: String, handler: () -> AbstractHandler) {
+        route(url) { post(handler) }
     }
 }
 

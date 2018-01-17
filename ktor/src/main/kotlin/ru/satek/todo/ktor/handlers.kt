@@ -13,25 +13,43 @@ import io.ktor.routing.post
 import ru.satek.todo.domain.*
 import java.util.*
 
-suspend fun PipelineContext<Unit, ApplicationCall>.addItem(executor: Executor) {
-    try {
-        val user = call.retrieveUser()
-        val item = call.receive<ItemData>()
-        executor.execute(AddItemCommand(user, item))
-        call.respond("OK")
-    } catch (ex: UserNotFound) {
-        throw Forbidden(cause = ex)
-    }
+suspend fun PipelineContext<Unit, ApplicationCall>.addTask(executor: Executor) {
+    val user = call.retrieveUser()
+    val task = call.receive<TaskData>()
+    val id = executor.execute(AddTaskCommand(user, task))
+    call.respond(id)
 }
 
-suspend fun PipelineContext<Unit, ApplicationCall>.selectAllItems(executor: Executor) {
-    try {
-        val user = call.retrieveUser()
-        val items = executor.execute(SelectAllItemsQuery(user))
-        call.respond(items)
-    } catch (ex: UserNotFound) {
-        throw Forbidden(cause = ex)
-    }
+suspend fun PipelineContext<Unit, ApplicationCall>.selectAllTasks(executor: Executor) {
+    val user = call.retrieveUser()
+    val tasks = executor.execute(SelectAllTasksQuery(user))
+    call.respond(tasks)
+}
+
+suspend fun PipelineContext<Unit, ApplicationCall>.selectCompletedTasks(executor: Executor) {
+    val user = call.retrieveUser()
+    val tasks = executor.execute(SelectCompletedTasksQuery(user))
+    call.respond(tasks)
+}
+
+suspend fun PipelineContext<Unit, ApplicationCall>.selectOpenTasks(executor: Executor) {
+    val user = call.retrieveUser()
+    val tasks = executor.execute(SelectOpenTasksQuery(user))
+    call.respond(tasks)
+}
+
+suspend fun PipelineContext<Unit, ApplicationCall>.selectTaskById(executor: Executor) {
+    val user = call.retrieveUser()
+    val taskId = UUID.fromString(call.parameters["id"])
+    val task = executor.execute(SelectTaskByIdQuery(user, taskId))
+    call.respond(task)
+}
+
+suspend fun PipelineContext<Unit, ApplicationCall>.completeTask(executor: Executor) {
+    val user = call.retrieveUser()
+    val taskId = UUID.fromString(call.parameters["id"])
+    executor.execute(CompleteTaskCommand(user, taskId))
+    call.respond("OK")
 }
 
 fun Route.signIn(executor: Executor) {

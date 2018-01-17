@@ -1,3 +1,16 @@
 package ru.satek.todo.domain
 
-data class ItemData(val content: String)
+import java.util.*
+
+data class TaskData(
+        val content: String,
+        val completed: Boolean
+)
+
+data class TaskAndId(
+        val id: UUID,
+        val content: String,
+        val completed: Boolean
+)
+
+data class AuthToken(val user: UUID)

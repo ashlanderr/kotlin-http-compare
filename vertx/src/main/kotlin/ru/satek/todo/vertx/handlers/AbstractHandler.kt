@@ -36,7 +36,7 @@ abstract class AbstractHandler {
 
         launch(dispatcher) {
             try {
-                handle()
+                interceptor { handle() }
             } catch (ex: HttpException) {
                 context.response()
                         .setStatusCode(ex.code)
@@ -56,6 +56,10 @@ abstract class AbstractHandler {
     }
 
     abstract suspend fun handle()
+
+    open suspend fun interceptor(inner: suspend () -> Unit) {
+        inner()
+    }
 
     protected fun retrieveUser(): UUID {
         val user = context.getCookie("Session")?.value ?: throw HttpException(401, "Unauthorized")
