@@ -28,10 +28,10 @@ repositories {
 dependencies {
     compile project(":domain")
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
-    compile "io.aconite:aconite-server:0.3.2-1-9-g8fc520d"
+    compile "io.aconite:aconite-server:0.4.0"
     compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
-    testCompile "io.aconite:aconite-client:0.3.2-1-9-g8fc520d"
+    testCompile "io.aconite:aconite-client:0.4.0"
     testCompile "org.junit.jupiter:junit-jupiter-api:5.0.3"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:5.0.3"
 }
